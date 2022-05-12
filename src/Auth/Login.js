@@ -1,17 +1,40 @@
 import React from "react";
 import classes from "./Login.module.css";
 import { useFormik } from "formik";
-
+import * as yup from "yup";
+import { LoginService } from "../ApiServices/apiCalls";
+import axios from "axios";
 function Login() {
+  const validationSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email("Enter valid email")
+      .required("Enter valid email"),
+    password: yup.string().required("Password required"),
+  });
+
   const formik = useFormik({
     initialValues: {
       email: "",
-      passoword: "",
+      password: "",
     },
+    validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values));
+      handleLogin();
     },
   });
+
+  const handleLogin = () => {
+    fetch("https://fakestoreapi.com/auth/login", {
+      method: "POST",
+      body: JSON.stringify({
+        username: "mor_2314",
+        password: "83r5^_",
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => console.log(json));
+  };
 
   return (
     <div className={classes.container}>
@@ -25,10 +48,7 @@ function Login() {
           </div>
           <div className={classes.userField}>
             <h1>Login to eBucket</h1>
-            <p>
-              Welcome back! login with your data that you entered during
-              registration
-            </p>
+            <p>Welcome back! login with your data</p>
             <div className={classes.inputContainer}>
               <form onSubmit={formik.handleSubmit}>
                 <div className={classes.emailContainer}>
@@ -40,6 +60,10 @@ function Login() {
                       onChange={formik.handleChange("email")}
                     />
                   </div>
+
+                  {formik.touched.email && formik.errors.email && (
+                    <span className={classes.error}>{formik.errors.email}</span>
+                  )}
                 </div>
                 <div className={classes.passContainer}>
                   <label>Password</label>
@@ -47,9 +71,14 @@ function Login() {
                     <input
                       type="password"
                       className={classes.inputBox}
-                      onChange={formik.handleChange("passoword")}
+                      onChange={formik.handleChange("password")}
                     />
                   </div>
+                  {formik.touched.password && formik.errors.password && (
+                    <span className={classes.error}>
+                      {formik.errors.password}
+                    </span>
+                  )}
                 </div>
 
                 <div className={classes.submitContainer}>

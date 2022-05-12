@@ -78,3 +78,7 @@ height: 600px;
     border-style: none;
     width: 100%;
 }
+.error{
+    color: red;
+    font-size: 12px;
+}
