@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import classes from "./Login.module.css";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { LoginService } from "../ApiServices/apiCalls";
-import axios from "axios";
+import { setCookie } from "../Utilities/utilities";
+import { AuthContext } from "../App";
+import Loader from "../Components/Loader/Loader";
+
 function Login() {
+  const { onLogin } = useContext(AuthContext);
+  const [isLoading, setisLoading] = useState(false);
   const validationSchema = yup.object().shape({
     email: yup
       .string()
@@ -18,26 +23,32 @@ function Login() {
       email: "",
       password: "",
     },
+
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: () => {
       handleLogin();
     },
   });
 
   const handleLogin = () => {
-    fetch("https://fakestoreapi.com/auth/login", {
-      method: "POST",
-      body: JSON.stringify({
-        username: "mor_2314",
-        password: "83r5^_",
-      }),
+    setisLoading(true);
+    LoginService({
+      username: "mor_2314",
+      password: "83r5^_",
     })
-      .then((res) => res.json())
-      .then((json) => console.log(json));
+      .then((res) => {
+        onLogin(res.data.token);
+      })
+      .catch((err) => {
+        console.log(err, "error");
+      })
+      .finally(() => {
+        setisLoading(false);
+      });
   };
-
   return (
     <div className={classes.container}>
+      {isLoading && <Loader />}
       <div className={classes.loginContainer}>
         <div className={classes.splitLoginContainer}>
           <div className={classes.imageContainer}>

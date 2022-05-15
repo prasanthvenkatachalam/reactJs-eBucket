@@ -6,9 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 import { BASEURL } from "./Utilities/utilities";
-const baseUrl = axios.create({
-  baseURL: BASEURL,
-});
+
+axios.defaults.baseURL = BASEURL;
 
 ReactDOM.render(
   <React.StrictMode>
